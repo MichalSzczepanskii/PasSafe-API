@@ -18,6 +18,8 @@ class FolderTest extends TestCase
 
     protected function setUp(): void {
         parent::setUp();
+        $this->artisan('db:seed');
+
         self::$user = User::create([
             'email' => 'test@localhost',
             'password' => Hash::make('root12'),
@@ -35,10 +37,10 @@ class FolderTest extends TestCase
             [],
             ['Authorization' => 'Bearer ' . self::$token]);
         $response
-            ->assertSuccessful()
-        ->assertJsonStructure([
+            ->assertSuccessful();
+        $response->assertJsonStructure([[
             'id', 'name'
-        ]);
+        ]]);
     }
 
     public function testGuestCannotViewFolders() {
