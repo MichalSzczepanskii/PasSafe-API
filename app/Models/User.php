@@ -22,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'encryption_key'
     ];
 
     /**
@@ -31,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'encryption_key'
     ];
 
 
@@ -40,6 +41,8 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function getJWTCustomClaims() {
-        return [];
+        return [
+            'encryption_key' => $this->encryption_key
+        ];
     }
 }
