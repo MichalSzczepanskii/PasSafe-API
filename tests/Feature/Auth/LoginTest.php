@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -18,9 +19,9 @@ class LoginTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
         self::$user = User::create([
-            'name' => 'test',
             'email' => 'test@localhost',
-            'password' => Hash::make('root12')
+            'password' => Hash::make('root12'),
+            'encryption_key' => Str::random(32),
         ]);
     }
 
