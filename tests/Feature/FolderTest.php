@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -11,7 +12,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class FolderTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     protected static $user;
     protected static $token;

@@ -44,4 +44,8 @@ class User extends Authenticatable implements JWTSubject
             'encryption_key' => $this->encryption_key
         ];
     }
+
+    public function entries() {
+        return $this->hasMany(Entry::class);
+    }
 }

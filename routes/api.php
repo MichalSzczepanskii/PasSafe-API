@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EntryController;
 use App\Http\Controllers\FolderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,3 +32,15 @@ Route::middleware(['api', 'auth'])
     ->group(function() {
     Route::get('', [FolderController::class, 'index'])->name('index');
 });
+
+Route::middleware(['api', 'auth'])
+    ->prefix('entries')
+    ->name('entries.')
+    ->group(function() {
+        Route::get('', [EntryController::class, 'index'])->name('index');
+        Route::post('store', [EntryController::class, 'store'])->name('store');
+        Route::delete('{entry}', [EntryController::class, 'remove'])
+            ->where('entry', '[0-9]+')
+            ->can('delete', 'entry')
+            ->name('remove');
+    });

@@ -22,5 +22,11 @@ class UserSeeder extends Seeder
             'encryption_key' => Str::random(32)
         ]);
 
+        User::factory()->create([
+            'email' => 'user@localhost',
+            'password' => Hash::make('root12'),
+            'encryption_key' => Str::random(32)
+        ]);
+
     }
 }
