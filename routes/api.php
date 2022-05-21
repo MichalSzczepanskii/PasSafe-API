@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EntryController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,4 +48,12 @@ Route::middleware(['api', 'auth'])
             ->where('entry', '[0-9]+')
             ->can('edit', 'entry')
             ->name('edit');
+    });
+
+Route::middleware(['api', 'auth'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function() {
+        Route::get('', [UserController::class, 'me'])->name('me');
+        Route::post('change-password', [UserController::class, 'changePassword'])->name('change_password');
     });
