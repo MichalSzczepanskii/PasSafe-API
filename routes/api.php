@@ -43,4 +43,8 @@ Route::middleware(['api', 'auth'])
             ->where('entry', '[0-9]+')
             ->can('delete', 'entry')
             ->name('remove');
+        Route::put('{entry}', [EntryController::class, 'edit'])
+            ->where('entry', '[0-9]+')
+            ->can('edit', 'entry')
+            ->name('edit');
     });

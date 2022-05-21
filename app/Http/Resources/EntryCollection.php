@@ -11,6 +11,7 @@ class EntryCollection extends JsonResource
     {
         return [
             'id' => $this->id,
+            'name' => $this->name,
             'login' => $this->login,
             'password' => $this->password,
             'site' => $this->site,

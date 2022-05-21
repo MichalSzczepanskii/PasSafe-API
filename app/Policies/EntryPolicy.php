@@ -27,5 +27,9 @@ class EntryPolicy
             : Response::deny('You do not own this entry');
     }
 
+    public function edit(User $user, Entry $entry) {
+        return $user->id === $entry->user_id;
+    }
+
 
 }

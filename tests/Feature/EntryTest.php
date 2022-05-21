@@ -19,6 +19,7 @@ class EntryTest extends TestCase
     protected static $otherUser;
     protected static $userEntry;
     protected static $otherUserEntry;
+    protected static $folder;
 
     protected function authenticate() {
         return JWTAuth::fromUser(self::$user);
@@ -43,7 +44,7 @@ class EntryTest extends TestCase
             'encryption_key' => Str::random(32),
         ]);
 
-        $folder = Folder::create(['name' => 'test']);
+        self::$folder = Folder::create(['name' => 'test']);
 
         self::$userEntry = Entry::create([
             'name' => 'test',
@@ -51,7 +52,7 @@ class EntryTest extends TestCase
             'password' => 'test',
             'site' => 'test',
             'user_id' => self::$user->id,
-            'folder_id' => $folder->id
+            'folder_id' => self::$folder->id
         ]);
 
         self::$otherUserEntry = Entry::create([
@@ -60,7 +61,7 @@ class EntryTest extends TestCase
             'password' => 'testowy',
             'site' => 'testowy',
             'user_id' => self::$otherUser->id,
-            'folder_id' => $folder->id
+            'folder_id' => self::$folder->id
         ]);
     }
 
@@ -108,6 +109,63 @@ class EntryTest extends TestCase
     public function testUserCannotDeleteOtherEntries() {
         $response = $this->authResponse()
             ->delete(route('entries.remove', self::$otherUserEntry));
+
+        $response->assertForbidden();
+    }
+
+    public function testUserCanAddEntry() {
+        $response = $this->authResponse()
+            ->post(route('entries.store'), [
+                'name' => 'new entry',
+                'login' => 'new login',
+                'password' => 'newpassword',
+                'site' => 'newsite',
+                'user_id' => self::$user->id,
+                'folder_id' => self::$folder->id
+            ]);
+
+        $response->assertSuccessful()
+            ->assertJsonFragment([
+                'name' => 'new entry',
+                'login' => 'new login',
+                'password' => 'newpassword',
+                'site' => 'newsite',
+                'description' => null,
+                'user' => [
+                    'id' => self::$user->id,
+                    'email' => self::$user->email,
+                ],
+                'folder' => [
+                    'id' => self::$folder->id,
+                    'name' => self::$folder->name,
+                ]
+            ]);
+    }
+
+    public function testUserCanEditHisEntry() {
+        $response = $this->authResponse()
+            ->put(route('entries.edit', self::$userEntry), [
+                'name' => 'edit entry',
+                'login' => 'edit login',
+                'password' => 'editpassword',
+                'site' => 'editsite',
+                'user_id' => self::$user->id,
+                'folder_id' => self::$folder->id
+            ]);
+
+        $response->assertSuccessful();
+    }
+
+    public function testUserCannotEditOtherEntry() {
+        $response = $this->authResponse()
+            ->put(route('entries.edit', self::$otherUserEntry), [
+                'name' => 'edit entry',
+                'login' => 'edit login',
+                'password' => 'editpassword',
+                'site' => 'editsite',
+                'user_id' => self::$user->id,
+                'folder_id' => self::$folder->id
+            ]);
 
         $response->assertForbidden();
     }
